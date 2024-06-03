@@ -34,5 +34,8 @@ $(TARGET): $(OBJS) $(EXAMPLE_FILE)
 clean:
 	rm -f $(TARGET) $(OBJS)
 
+fmt:
+	find . -name "*.cc" -o -name "*.hpp" | xargs clang-format -i
+
 # Phony targets
 .PHONY: all clean

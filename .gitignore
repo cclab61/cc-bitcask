@@ -1,0 +1,10 @@
+.vscode
+.idea
+*~
+_*
+*.o
+*.d
+*.asm
+*.sym
+*.img
+main_example

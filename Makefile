@@ -2,9 +2,13 @@
 CXX = g++
 # Compiler flags
 CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -Iinclude
-# Linker flags
-LDFLAGS = -lstdc++fs
 
+# Linker flags
+ifeq ($(OS),Windows_NT)
+	LDFLAGS = -lstdc++fs
+else
+	LDFLAGS = -stdlib=libc++
+endif
 # Target executable
 TARGET = main_example
 

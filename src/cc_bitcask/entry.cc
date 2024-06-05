@@ -51,7 +51,7 @@ std::vector<uint8_t> Entry::Encode() const {
 }
 
 // Decode Method
-Entry Entry::Decode(const std::vector<uint8_t> &buf) {
+Entry *Entry::Decode(const std::vector<uint8_t> &buf) {
     std::size_t offset = 0;
 
     uint32_t KeySize = 0;
@@ -76,6 +76,6 @@ Entry Entry::Decode(const std::vector<uint8_t> &buf) {
     std::vector<uint8_t> Value(buf.begin() + offset,
                                buf.begin() + offset + ValueSize);
 
-    return Entry(Key, Value, Mark);
+    return new Entry(Key, Value, Mark);
 }
 }  // namespace cc_bitcask

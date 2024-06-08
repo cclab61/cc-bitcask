@@ -12,6 +12,7 @@
 #include <sys/stat.h>  //use for chmod
 #include <math.h>
 #include "entry.hpp"
+#include <cstdlib>
 
 using namespace std;
 

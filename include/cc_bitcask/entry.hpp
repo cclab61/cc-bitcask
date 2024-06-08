@@ -24,7 +24,7 @@ class Entry {
 
     std::vector<uint8_t> Encode() const;
 
-    static Entry *Decode(const std::vector<uint8_t> &buf);
+    static Entry Decode(const std::vector<uint8_t> &buf);
 };
 }  // namespace cc_bitcask
 #endif

@@ -29,8 +29,14 @@ shared_ptr<MiniBitcask::BitcaskHanlde> MiniBitcask::Open(const string &dirPath) 
     string active_filename = join_path(dirPath, "1.active");
     if (!fs::exists(dirPath)) { // if exists, we assume it's a dir
         fs::create_directory(dirPath);
-        if (chmod(dirPath.c_str(), 0644) != 0) {
+        if (chmod(dirPath.c_str(), 0755) != 0) {
             cerr << "Failed to set dir permissions." << endl;
+            return nullptr;
+        }
+        ofstream tmp(active_filename, ios::out | ios::binary);
+        tmp.close();
+        if (chmod(active_filename.c_str(), 0644) != 0) {
+            cerr << "Failed to set active_filename permissions." << endl;
             return nullptr;
         }
     } else {
@@ -40,17 +46,11 @@ shared_ptr<MiniBitcask::BitcaskHanlde> MiniBitcask::Open(const string &dirPath) 
             return nullptr;
         }
     }
-    fd = fstream(active_filename, ios::out | ios::in | ios::trunc | ios::binary);
-
-    if (chmod(active_filename.c_str(), 0644) != 0) {
-        cerr << "Failed to set active_filename permissions." << endl;
-        return nullptr;
-    }
-
+    fd = fstream(active_filename, ios::out | ios::in | ios::binary);
     return make_shared<BitcaskHanlde>(dirPath, std::move(fd), fs::file_size(active_filename));
 }
 
-Entry *MiniBitcask::BitcaskHanlde::read(size_t offset) {
+Entry* MiniBitcask::BitcaskHanlde::read(size_t offset) {
     if (!fd_.is_open()) {
         cerr << "bitcaskHandle was closed" << endl;
         return nullptr;
@@ -62,20 +62,26 @@ Entry *MiniBitcask::BitcaskHanlde::read(size_t offset) {
     char buffer[byte_num];
     fd_.read(buffer, byte_num);
     const vector<uint8_t> decode_buffer(buffer, buffer + byte_num);
-    Entry* entry = Entry::Decode(decode_buffer);
-    offset += entryHeaderSize;
+    Entry *entry = static_cast<Entry*>(malloc(sizeof (Entry)));
+    *entry = Entry::Decode(decode_buffer);
+//    cout << "keys: " << entry -> KeySize << endl;
+//    cout << "values: " << entry -> ValueSize << endl;
+//    cout << "key: " << entry -> Key.data() << endl;
+//    cout << "value: " << entry -> Value.data() << endl;
 
-    char key_buffer[entry->KeySize];
-    fd_.seekp(offset);
-    fd_.read(key_buffer, entry->KeySize);
-    const vector<uint8_t> key_vector(key_buffer, key_buffer + entry->KeySize);
-    entry -> Key = key_vector;
-    offset += entry->KeySize;
-    char value_buffer[entry->ValueSize];
-    fd_.seekp(offset);
-    fd_.read(value_buffer, entry->ValueSize);
-    const vector<uint8_t> value_vector(value_buffer, value_buffer + entry->ValueSize);
-    entry -> Value = value_vector;
+//    offset += entryHeaderSize;
+//
+//    char key_buffer[entry->KeySize];
+//    fd_.seekp(offset);
+//    fd_.read(key_buffer, entry->KeySize);
+//    const vector<uint8_t> key_vector(key_buffer, key_buffer + entry->KeySize);
+//    entry -> Key = key_vector;
+//    offset += entry->KeySize;
+//    char value_buffer[entry->ValueSize];
+//    fd_.seekp(offset);
+//    fd_.read(value_buffer, entry->ValueSize);
+//    const vector<uint8_t> value_vector(value_buffer, value_buffer + entry->ValueSize);
+//    entry -> Value = value_vector;
     return entry;
 }
 
@@ -89,6 +95,7 @@ void MiniBitcask::BitcaskHanlde::write(Entry e) {
     char buffer[e.GetSize()];
     std::memcpy(buffer, e.Encode().data(), e.GetSize());
     fd_.write(buffer, e.GetSize());
+    offset_ += e.GetSize();
 }
 
 bool MiniBitcask::BitcaskHanlde::isActive() {

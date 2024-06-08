@@ -64,24 +64,9 @@ Entry* MiniBitcask::BitcaskHanlde::read(size_t offset) {
     const vector<uint8_t> decode_buffer(buffer, buffer + byte_num);
     Entry *entry = static_cast<Entry*>(malloc(sizeof (Entry)));
     *entry = Entry::Decode(decode_buffer);
-//    cout << "keys: " << entry -> KeySize << endl;
-//    cout << "values: " << entry -> ValueSize << endl;
-//    cout << "key: " << entry -> Key.data() << endl;
-//    cout << "value: " << entry -> Value.data() << endl;
 
-//    offset += entryHeaderSize;
-//
-//    char key_buffer[entry->KeySize];
-//    fd_.seekp(offset);
-//    fd_.read(key_buffer, entry->KeySize);
-//    const vector<uint8_t> key_vector(key_buffer, key_buffer + entry->KeySize);
-//    entry -> Key = key_vector;
-//    offset += entry->KeySize;
-//    char value_buffer[entry->ValueSize];
-//    fd_.seekp(offset);
-//    fd_.read(value_buffer, entry->ValueSize);
-//    const vector<uint8_t> value_vector(value_buffer, value_buffer + entry->ValueSize);
-//    entry -> Value = value_vector;
+    cout << "key: " << entry -> Key.data() << endl;
+    cout << "value: " << entry -> Value.data() << endl;
     return entry;
 }
 

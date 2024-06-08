@@ -10,3 +10,5 @@ _*
 main_example
 run_tests
 testdir
+.xmake
+build

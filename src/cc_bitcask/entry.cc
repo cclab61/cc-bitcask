@@ -1,4 +1,5 @@
 #include "cc_bitcask/entry.hpp"
+#include "iostream"
 namespace cc_bitcask {
 // Constructor
 Entry::Entry(const std::vector<uint8_t> &key, const std::vector<uint8_t> &value,
@@ -74,7 +75,8 @@ Entry Entry::Decode(const std::vector<uint8_t> &buf) {
 
     std::vector<uint8_t> Value(buf.begin() + offset,
                                buf.begin() + offset + ValueSize);
-
+        std::cout << "keys: " <<  KeySize << std::endl;
+        std::cout << "values: " <<  ValueSize << std::endl;
     return Entry(Key, Value, Mark);
 }
 }  // namespace cc_bitcask

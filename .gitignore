@@ -8,3 +8,5 @@ _*
 *.sym
 *.img
 main_example
+.xmake
+build

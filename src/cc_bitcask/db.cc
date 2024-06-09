@@ -64,11 +64,10 @@ Entry *MiniBitcask::BitcaskHanlde::read(size_t offset) {
 
     size_t byte_num = min(offset_ - offset, max_read_buffer_num);
 
-    char buffer[byte_num];
-    fd_.read(buffer, byte_num);
-    const vector<uint8_t> decode_buffer(buffer, buffer + byte_num);
-    Entry *entry = static_cast<Entry *>(malloc(sizeof(Entry)));
-    *entry = Entry::Decode(decode_buffer);
+    std::vector<char> buffer(byte_num);
+    fd_.read(buffer.data(), byte_num);
+    std::vector<uint8_t> decode_buffer(buffer.begin(), buffer.end());
+    Entry *entry = new Entry(Entry::Decode(decode_buffer));
     return entry;
 }
 
